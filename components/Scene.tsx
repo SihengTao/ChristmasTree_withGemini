@@ -35,7 +35,7 @@ const Scene: React.FC<SceneProps> = ({ isExploded, handX, handPresent }) => {
       <fog attach="fog" args={['#02040a', 15, 60]} />
 
       {/* Brighter ambient to show blue needles */}
-      <ambientLight intensity={0.5} />
+      <ambientLight intensity={2.5} />
       
       {/* Main White Light (Moonlight) */}
       <pointLight position={[-10, 20, 10]} intensity={4} color="#ffffff" distance={50} decay={2} />
@@ -45,10 +45,10 @@ const Scene: React.FC<SceneProps> = ({ isExploded, handX, handPresent }) => {
       
       {/* Backlight for silhouette */}
       <spotLight position={[0, 10, -15]} angle={0.8} intensity={8} color="#aaddff" />
-
+      
       <Environment preset="city" blur={0.8} />
 
-      <group position={[0, -2, 0]}>
+      <group position={[0, -3, 0]}>
         <DiamondTree isExploded={isExploded} handX={handX} handPresent={handPresent} />
       </group>
 

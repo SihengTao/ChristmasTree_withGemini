@@ -83,7 +83,7 @@ export const DiamondTree: React.FC<DiamondTreeProps> = ({ isExploded, handX, han
 
     // 1. TRUNK (Shortened as requested)
     // Was 4.5, now 3.5 (approx 3/4)
-    const TRUNK_HEIGHT = 3.5;
+    const TRUNK_HEIGHT = 4.5;
     // Start lower to ensure ground contact, overlap into tree
     const TRUNK_BASE_Y = -6.0; 
     
@@ -99,9 +99,9 @@ export const DiamondTree: React.FC<DiamondTreeProps> = ({ isExploded, handX, han
     }
 
     // 2. TREE LAYERS (Blue Needles + White Snow)
-    const LAYERS = 22;
-    const TOP_Y = 8;
-    const BOTTOM_Y = -4.0; // Slightly higher bottom for tree
+    const LAYERS = 13
+    const TOP_Y = 12;
+    const BOTTOM_Y = -7.0; // Slightly higher bottom for tree
     
     for (let l = 0; l < LAYERS; l++) {
       const t = l / (LAYERS - 1);
@@ -134,11 +134,11 @@ export const DiamondTree: React.FC<DiamondTreeProps> = ({ isExploded, handX, han
           const nz = baseZ + (Math.random() - 0.5) * spread;
           const ny = baseY - (Math.random() * 0.4);
 
-          addParticle(nx, ny, nz, Math.random()>0.3 ? COLORS.NEEDLE_BLUE : COLORS.NEEDLE_SHADOW, 0.12, 'needle');
+          addParticle(nx, ny, nz, Math.random()>0.8 ? COLORS.NEEDLE_BLUE : COLORS.NEEDLE_SHADOW, 0.12, 'needle');
 
           // 2.2 WHITE SNOW (The Cap)
           // Strictly on top
-          const snowChance = 0.65; 
+          const snowChance = 0.7; 
           if (Math.random() < snowChance) {
              const sx = baseX + (Math.random() - 0.5) * spread * 0.9;
              const sz = baseZ + (Math.random() - 0.5) * spread * 0.9;
@@ -148,12 +148,12 @@ export const DiamondTree: React.FC<DiamondTreeProps> = ({ isExploded, handX, han
           }
 
           // 2.3 ORNAMENTS (Red & Gold)
-          if (dist > 0.3 && Math.random() < 0.035) {
+          if (dist > 0.4 && Math.random() < 0.035) {
              const isGold = Math.random() > 0.3; // 70% Gold, 30% Red
              const pColor = isGold ? COLORS.ORNAMENT_GOLD : COLORS.ORNAMENT_RED;
              const ox = baseX + (Math.random() - 0.5) * 0.5;
              const oz = baseZ + (Math.random() - 0.5) * 0.5;
-             addParticle(ox, baseY - 0.4, oz, pColor, 0.22, 'ornament');
+             addParticle(ox, baseY - 0.4, oz, pColor, 0.15, 'ornament');
           }
           
           // 2.4 ICICLES
