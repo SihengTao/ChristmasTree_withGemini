@@ -124,7 +124,7 @@ const GestureController: React.FC<GestureControllerProps> = ({ onGestureChange }
   }, []); // Empty dependency array ensures this runs ONCE.
 
   return (
-    <div className="fixed bottom-4 right-4 w-32 h-24 rounded-lg overflow-hidden border-2 border-white/20 z-50 opacity-60 hover:opacity-100 transition-opacity bg-black shadow-lg">
+    <div className="fixed bottom-4 right-4 w-48 h-36 rounded-lg overflow-hidden border-2 border-white/20 z-50 opacity-60 hover:opacity-100 transition-opacity bg-black shadow-lg">
       <video
         ref={videoRef}
         className="w-full h-full object-cover transform -scale-x-100"

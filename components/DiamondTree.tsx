@@ -25,9 +25,10 @@ interface DiamondTreeProps {
   isExploded: boolean;
   handX: number; // 0 to 1
   handPresent: boolean;
+  parallaxRef: React.RefObject<{ x: number; tilt: number }>;
 }
 
-export const DiamondTree: React.FC<DiamondTreeProps> = ({ isExploded, handX, handPresent }) => {
+export const DiamondTree: React.FC<DiamondTreeProps> = ({ isExploded, handX, handPresent, parallaxRef }) => {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   
   const { particles, colorArray } = useMemo(() => {
@@ -217,8 +218,11 @@ export const DiamondTree: React.FC<DiamondTreeProps> = ({ isExploded, handX, han
     // Rotation Logic
     let targetRot = 0;
     if (handPresent) {
-      targetRot = (handX - 0.5) * Math.PI * 2.5; 
-      currentRotation.current = THREE.MathUtils.lerp(currentRotation.current, targetRot, delta * 3.0);
+      const baseRot = (handX - 0.5) * Math.PI * 2.5;
+      const rotationSign = isExploded ? 1 : -1; // Closed palm should mirror direction
+      targetRot = baseRot * rotationSign; 
+      const followLerp = delta * (isExploded ? 3.0 : 4.5); // Closed palm: 1.5x faster follow
+      currentRotation.current = THREE.MathUtils.lerp(currentRotation.current, targetRot, followLerp);
     } else {
       currentRotation.current += delta * 0.08; 
     }
@@ -226,6 +230,8 @@ export const DiamondTree: React.FC<DiamondTreeProps> = ({ isExploded, handX, han
     const cosRot = Math.cos(currentRotation.current);
     const sinRot = Math.sin(currentRotation.current);
     const time = state.clock.getElapsedTime();
+
+    const parallaxX = isExploded && handPresent && parallaxRef.current ? parallaxRef.current.x : 0;
 
     for (let i = 0; i < COUNT; i++) {
       if (!particles[i]) continue;
@@ -255,7 +261,7 @@ export const DiamondTree: React.FC<DiamondTreeProps> = ({ isExploded, handX, han
       const expZ = p.explodePos[2];
       
       tempObject.position.set(
-        THREE.MathUtils.lerp(rotX, expX, t),
+        THREE.MathUtils.lerp(rotX, expX, t) + parallaxX,
         THREE.MathUtils.lerp(treeY, expY, t),
         THREE.MathUtils.lerp(rotZ, expZ, t)
       );
