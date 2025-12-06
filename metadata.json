@@ -1,0 +1,7 @@
+{
+  "name": "Grand Luxury Interactive Tree",
+  "description": "A cinematic, gesture-controlled 3D Christmas tree experience. Open your hand to scatter the stars; close it to rebuild the tree.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
