@@ -35,8 +35,8 @@ const Scene: React.FC<SceneProps> = ({ isExploded, handX, handPresent }) => {
     // Background parallax when the palm is open
     const targetParallax = handPresent && isExploded ? (handX - 0.5) * 4 * 1.3 : 0;
     const targetTilt = handPresent && isExploded ? (handX - 0.5) * 0.25 * 1.3 : 0;
-    parallaxX.current = THREE.MathUtils.lerp(parallaxX.current, targetParallax, 0.08);
-    parallaxTilt.current = THREE.MathUtils.lerp(parallaxTilt.current, targetTilt, 0.08);
+    parallaxX.current = THREE.MathUtils.lerp(parallaxX.current, targetParallax, 0.02);
+    parallaxTilt.current = THREE.MathUtils.lerp(parallaxTilt.current, targetTilt, 0.02);
 
     parallaxRef.current.x = parallaxX.current;
     parallaxRef.current.tilt = parallaxTilt.current;

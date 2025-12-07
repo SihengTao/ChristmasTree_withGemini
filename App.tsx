@@ -1,14 +1,18 @@
-import React, { useState, Suspense, useCallback } from 'react';
+import React, { useState, Suspense, useCallback, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Loader } from '@react-three/drei';
 import Scene from './components/Scene';
 import GestureController from './components/GestureController';
+
+const MUSIC_SRC = './music/Christmas.mp3';
 
 const App: React.FC = () => {
   const [isExploded, setIsExploded] = useState(false);
   const [handPresent, setHandPresent] = useState(false);
   const [handX, setHandX] = useState(0.5);
   const [started, setStarted] = useState(false);
+  const [musicPaused, setMusicPaused] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Wrap in useCallback so the function reference remains stable 
   // (though GestureController now handles ref stability internally, this is best practice)
@@ -17,6 +21,46 @@ const App: React.FC = () => {
     setHandPresent(present);
     setHandX(x);
   }, []);
+
+  useEffect(() => {
+    const audio = new Audio(MUSIC_SRC);
+    audio.loop = true;
+    audio.volume = 0.7;
+    audio.preload = 'auto';
+    audioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (started && !musicPaused) {
+      audio.play().catch((err) => {
+        console.warn('Background music could not start automatically. Click again to play.', err);
+      });
+    } else {
+      audio.pause();
+    }
+  }, [started, musicPaused]);
+
+  const handleStart = () => {
+    setStarted(true);
+    if (audioRef.current && !musicPaused) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch((err) => {
+        console.warn('Background music blocked by browser autoplay policy.', err);
+      });
+    }
+  };
+
+  const toggleMusic = () => {
+    setMusicPaused((prev) => !prev);
+  };
 
   return (
     <div className="w-full h-screen relative bg-black font-sans overflow-hidden">
@@ -48,7 +92,7 @@ const App: React.FC = () => {
                 Allow camera to begin.
               </p>
               <button
-                onClick={() => setStarted(true)}
+                onClick={handleStart}
                 className="px-10 py-3 bg-white text-black font-semibold uppercase tracking-[0.2em] text-xs hover:bg-cyan-100 hover:scale-105 transition-all shadow-[0_0_20px_rgba(255,255,255,0.3)]"
               >
                 Start Experience
@@ -78,6 +122,24 @@ const App: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Music Control */}
+      {started && (
+        <div className="absolute left-4 bottom-4 z-20 pointer-events-none">
+          <div className="pointer-events-auto flex items-center gap-3 bg-black/70 backdrop-blur-lg border border-white/10 rounded-full px-4 py-2 shadow-[0_0_50px_rgba(255,255,255,0.12)]">
+            <div className="flex flex-col leading-tight text-white">
+              <span className="text-[9px] uppercase tracking-[0.3em] text-gray-400">Now Playing</span>
+              <span className="text-sm font-semibold">圣诞结 · 陈奕迅</span>
+            </div>
+            <button
+              onClick={toggleMusic}
+              className="px-3 py-1 text-[10px] uppercase tracking-[0.25em] bg-white text-black rounded-full hover:bg-cyan-100 hover:scale-105 transition-all"
+            >
+              {musicPaused ? 'Play' : 'Pause'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Gesture Controller */}
       {started && <GestureController onGestureChange={handleGesture} />}
