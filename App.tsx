@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { Loader } from '@react-three/drei';
 import Scene from './components/Scene';
 import GestureController from './components/GestureController';
+import treeImg from './christmas_tree.png';
 
 const MUSIC_SRC = './music/Christmas.mp3';
 
@@ -121,6 +122,15 @@ const App: React.FC = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Side Reference Image */}
+      <div className="absolute right-4 top-4 z-20 pointer-events-none">
+        <img
+          src={treeImg}
+          alt="Christmas tree reference"
+          className="w-36 sm:w-44 md:w-56 h-auto object-cover"
+        />
       </div>
 
       {/* Music Control */}
